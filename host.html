@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BibleQuest — Host Screen</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📖</text></svg>">
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <nav class="top-nav">
+    <a href="host.html" class="brand-logo">
+      <span class="brand-emblem">📖</span>
+      <span class="brand-text">BibleQuest</span>
+      <span class="brand-badge" style="background:rgba(255,200,87,0.15); color:var(--gold-divine); border-color:rgba(255,200,87,0.4);">Host Screen</span>
+    </a>
+    <div class="nav-actions">
+      <button id="btn-host-mute" class="icon-btn">🔊 Sound</button>
+      <a href="admin.html" class="icon-btn">⚙️ Admin Dashboard</a>
+      <a href="index.html" target="_blank" class="icon-btn">📱 Test Player</a>
+      <button id="btn-host-logout" class="icon-btn" style="color:#EF4444;">🚪 Logout</button>
+    </div>
+  </nav>
+
+  <!-- Main Container -->
+  <main class="main-container">
+
+    <!-- Screen 1: Select Quiz to Host -->
+    <div id="host-select-quiz" style="width: 100%; max-width: 1050px; display: flex; flex-direction: column; gap: 24px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;">
+        <div>
+          <h1 class="game-title" style="margin-bottom:4px;">Host a Quest</h1>
+          <p style="color: var(--text-secondary); font-size: 1.1rem; font-weight: 500;">Choose a scripture quiz to launch the live lobby for players</p>
+        </div>
+        <a href="admin.html" class="btn-primary btn-gold" style="text-decoration:none;">
+          + Create New Quiz
+        </a>
+      </div>
+
+      <div id="host-quiz-selection-list" class="quiz-grid">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+
+    <!-- Screen 2: Game Lobby (PIN & Live Joined Players) -->
+    <div id="host-lobby" class="lobby-container" style="display: none;">
+      <!-- Header with PIN and Count -->
+      <div class="lobby-header-card">
+        <div class="join-instruction">
+          <h2>Join with PIN:</h2>
+          <div class="pin-display-wrapper">
+            <div id="lobby-pin-display" class="pin-display">000 000</div>
+            <button id="btn-copy-pin" class="btn-copy-pin" title="Copy PIN to clipboard">📋 Copy PIN</button>
+          </div>
+          <div style="font-size: 0.95rem; color: var(--text-secondary); margin-top: 6px; font-weight:500;">
+            📱 Open the player link on any phone, tablet, or laptop (Max 100 players)
+          </div>
+        </div>
+
+        <div class="lobby-stats">
+          <!-- Realtime Joined Players Count with pulsating live dot -->
+          <div class="player-count-badge">
+            <span class="pulse-dot"></span>
+            <span>Players:</span>
+            <span id="lobby-player-count" class="count-number">0</span>
+          </div>
+
+          <button id="btn-start-game" class="btn-primary btn-gold" style="padding: 18px 40px; font-size: 1.4rem;">
+            Start Quest 🚀
+          </button>
+        </div>
+      </div>
+
+      <!-- Live Players Grid -->
+      <div class="lobby-players-box">
+        <div class="lobby-players-title">
+          <span>Quest: <strong id="host-quiz-title" style="color:var(--gold-divine); font-weight:900;">Loading...</strong></span>
+          <span>Joined Champions Live</span>
+        </div>
+        <div id="lobby-players-list" class="players-grid">
+          <div class="lobby-empty-hint">Waiting for players to join with PIN...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Screen 3: Live Question Screen -->
+    <div id="host-question" class="game-live-layout" style="display: none;">
+      <!-- Question Banner -->
+      <div class="question-banner">
+        <div class="question-meta">
+          <span id="host-q-index" style="font-size:1.15rem; font-weight:800; color:var(--gold-divine);">Question 1 of 5</span>
+          <button id="btn-skip-question" class="btn-primary" style="padding:8px 18px; font-size:0.95rem; background:rgba(225,29,72,0.85); border:1px solid rgba(225,29,72,0.5);">End Question ⏭️</button>
+        </div>
+        <div id="host-q-text" class="question-text">
+          Loading Question...
+        </div>
+      </div>
+
+      <!-- Middle Row: Left Timer | Center Display | Right Answers Count -->
+      <div class="question-middle-row">
+        <!-- Left Side: Circular Countdown Timer with SVG Radial Ring -->
+        <div id="host-timer-circle" class="timer-circle-widget">
+          <svg class="timer-svg" viewBox="0 0 120 120">
+            <circle class="timer-bg-circle" cx="60" cy="60" r="50"></circle>
+            <circle id="timer-svg-progress" class="timer-progress-circle" cx="60" cy="60" r="50"></circle>
+          </svg>
+          <div id="host-timer-digits" class="timer-digits">20</div>
+          <div class="timer-sub">Sec</div>
+        </div>
+
+        <!-- Center Display -->
+        <div class="question-center-box">
+          <span style="font-size: 3.2rem; filter:drop-shadow(0 0 15px rgba(255,200,87,0.4));">📖</span>
+          <span style="font-size: 1.1rem; font-weight: 800; color: var(--gold-divine); margin-top: 6px;">
+            Answer on your phone screen!
+          </span>
+        </div>
+
+        <!-- Right Side: Exact Answers Submitted Counter -->
+        <div class="answers-count-widget">
+          <div id="host-answers-count" class="answers-number">0</div>
+          <div class="answers-sub">Answers</div>
+          <div style="font-size:0.82rem; font-weight:800; color:var(--text-tertiary); margin-top:4px;">
+            of <span id="host-total-players-count">0</span> players
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom: Answer Cards (2 cards for True/False, 4 cards for Multiple Choice) -->
+      <div id="host-answers-grid" class="answers-grid">
+        <!-- Cards rendered dynamically -->
+      </div>
+    </div>
+
+    <!-- Screen 4: Question Result Breakdown -->
+    <div id="host-reveal" class="game-card" style="display: none; max-width: 950px; margin: 0 auto; text-align: center;">
+      <h2 style="font-size: 1.25rem; font-weight: 800; color: var(--gold-divine); margin-bottom: 6px; text-transform:uppercase; letter-spacing:1px;">
+        ✦ Correct Answer ✦
+      </h2>
+      <div id="reveal-correct-text" style="font-size: 2.4rem; font-weight: 900; color: #10B981; margin-bottom: 24px; text-shadow:0 0 20px rgba(16,185,129,0.5);">
+        Correct Option
+      </div>
+
+      <!-- Breakdown Bars -->
+      <div id="reveal-bars-container" style="display: flex; justify-content: center; gap: 24px; margin-bottom: 10px; width: 100%;">
+        <!-- Bars rendered dynamically -->
+      </div>
+
+      <!-- Advance Button for Mobile Host & Desktop -->
+      <div style="margin-top: 24px;">
+        <button id="btn-reveal-next" class="btn-primary btn-gold" style="padding: 16px 36px; font-size: 1.25rem; box-shadow: 0 8px 25px var(--gold-shadow); cursor: pointer; width: 100%; max-width: 320px;">
+          View Leaderboard ➡️
+        </button>
+      </div>
+    </div>
+
+    <!-- Screen 5: Leaderboard Screen -->
+    <div id="host-leaderboard" class="leaderboard-container" style="display: none; margin: 0 auto;">
+      <div class="leaderboard-header">
+        <div>
+          <h2 style="font-family:var(--font-cinematic); font-size: 2.2rem; font-weight: 900; color: var(--gold-divine);">Quest Scoreboard</h2>
+          <p style="color: var(--text-secondary); font-size: 1.05rem; font-weight: 600;">Top performers ranked by points & speed</p>
+        </div>
+        <button id="btn-next-question" class="btn-primary btn-gold" style="padding: 14px 32px; font-size: 1.2rem;">
+          Next Question ➡️
+        </button>
+      </div>
+
+      <!-- Fastest player badge -->
+      <div id="fastest-player-badge" style="background:rgba(59,130,246,0.18); border:1.5px solid rgba(59,130,246,0.45); color:#93C5FD; padding:12px 22px; border-radius:14px; font-weight:800; font-size:1.1rem; display:none;">
+        ⚡ <strong>Fastest Answer:</strong>
+      </div>
+
+      <div id="host-leaderboard-list" class="leaderboard-list">
+        <!-- Rows rendered dynamically -->
+      </div>
+
+      <!-- Bottom Advance Button for Mobile Hosts -->
+      <div style="text-align: center; margin-top: 20px;">
+        <button id="btn-next-question-bottom" class="btn-primary btn-gold" style="padding: 16px 36px; font-size: 1.25rem; width: 100%; max-width: 320px;">
+          Next Question ➡️
+        </button>
+      </div>
+    </div>
+
+    <!-- Screen 6: Final Podium Screen (Step-by-step automatic: 3rd -> 2nd -> Grand 1st -> 4th/5th Runners) -->
+    <div id="host-podium" style="width: 100%; max-width: 1000px; display: none; flex-direction: column; align-items: center; margin: 0 auto;">
+      <h1 style="font-family:var(--font-cinematic); font-size: 3.4rem; font-weight: 900; color: var(--gold-divine); margin-bottom: 6px; letter-spacing:2px; text-shadow:0 0 35px rgba(255,200,87,0.5);">
+        🎉 Final Quest Podium 🏆
+      </h1>
+      <p style="color: var(--text-secondary); font-size: 1.2rem; font-weight: 600; margin-bottom: 24px;">
+        Congratulations to our BibleQuest Champions!
+      </p>
+
+      <!-- 1st, 2nd, 3rd Podium Pedestals -->
+      <div class="podium-container">
+        <!-- 2nd Place -->
+        <div id="podium-col-2" class="podium-column" style="visibility:hidden; opacity:0; transition:opacity 0.5s;">
+          <div class="podium-avatar">🥈</div>
+          <div id="podium-p2-name" class="podium-name">-</div>
+          <div id="podium-p2-score" class="podium-score">0 pts</div>
+          <div class="podium-block block-2">2</div>
+        </div>
+
+        <!-- 1st Place (Grand Champion) -->
+        <div id="podium-col-1" class="podium-column" style="visibility:hidden; opacity:0; transition:opacity 0.5s;">
+          <div class="podium-avatar" style="font-size: 2.8rem;">👑 🥇</div>
+          <div id="podium-p1-name" class="podium-name" style="font-size:1.6rem; color:var(--gold-divine); font-weight:900;">-</div>
+          <div id="podium-p1-score" class="podium-score" style="font-size:1.3rem; color:#FFE082; font-weight:900;">0 pts</div>
+          <div class="podium-block block-1">1</div>
+        </div>
+
+        <!-- 3rd Place -->
+        <div id="podium-col-3" class="podium-column" style="visibility:hidden; opacity:0; transition:opacity 0.5s;">
+          <div class="podium-avatar">🥉</div>
+          <div id="podium-p3-name" class="podium-name">-</div>
+          <div id="podium-p3-score" class="podium-score">0 pts</div>
+          <div class="podium-block block-3">3</div>
+        </div>
+      </div>
+
+      <!-- 4th and 5th Runners-up Banner -->
+      <div id="podium-runners-container" style="display:none; width:100%; max-width:680px; gap:16px; margin-top:20px; justify-content:center; flex-wrap:wrap;">
+        <div id="podium-runner-4" style="flex:1; min-width:260px; background:rgba(20,27,53,0.95); border:1.5px solid rgba(118,87,255,0.3); border-radius:14px; padding:16px 20px; font-weight:800; font-size:1.15rem; color:#CBD5E1; text-align:center;">
+          4th Place: Loading...
+        </div>
+        <div id="podium-runner-5" style="flex:1; min-width:260px; background:rgba(20,27,53,0.95); border:1.5px solid rgba(118,87,255,0.3); border-radius:14px; padding:16px 20px; font-weight:800; font-size:1.15rem; color:#CBD5E1; text-align:center;">
+          5th Place: Loading...
+        </div>
+      </div>
+
+      <!-- All players scoreboard table -->
+      <div style="background:var(--surface); border:1px solid var(--border); border-radius:20px; padding:28px; width:100%; max-width:720px; box-shadow:var(--shadow-sm); margin-top:24px;">
+        <h3 style="font-family:var(--font-cinematic); font-size:1.25rem; font-weight:900; color:var(--gold-divine); margin-bottom:16px;">All Final Scores:</h3>
+        <div id="podium-all-scores-list" class="leaderboard-list">
+          <!-- Scores rendered dynamically -->
+        </div>
+      </div>
+
+      <div style="margin-top: 36px; display:flex; gap:18px;">
+        <button onclick="location.reload()" class="btn-primary btn-gold" style="padding:16px 36px; font-size:1.2rem;">
+          Play Again 🔄
+        </button>
+        <a href="admin.html" class="icon-btn" style="padding:16px 30px; font-size:1.1rem; text-decoration:none;">
+          Go to Admin ⚙️
+        </a>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Firebase Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+
+  <!-- App Scripts -->
+  <script src="js/firebase-config.js"></script>
+  <script src="js/particles.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/confetti.js"></script>
+  <script src="js/host.js"></script>
+</body>
+</html>

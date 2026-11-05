@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BibleQuest Admin — Quiz Management</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📖</text></svg>">
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <nav class="top-nav">
+    <a href="admin.html" class="brand-logo">
+      <span class="brand-emblem">📖</span>
+      <span class="brand-text">BibleQuest</span>
+      <span class="brand-badge" style="background:rgba(118,87,255,0.2); color:var(--purple-light); border-color:rgba(118,87,255,0.4);">Admin</span>
+    </a>
+    <div class="nav-actions">
+      <a href="host.html" class="icon-btn">💻 Host Screen</a>
+      <a href="index.html" target="_blank" class="icon-btn">📱 Player Link</a>
+      <button id="btn-admin-logout" class="icon-btn" style="color:#EF4444;">🚪 Logout</button>
+    </div>
+  </nav>
+
+  <!-- Main Container -->
+  <main class="main-container">
+
+    <!-- Screen 1: Admin Login Screen -->
+    <div id="admin-login-screen" class="game-card">
+      <div style="font-size: 3.5rem; margin-bottom: 14px; filter:drop-shadow(0 0 15px rgba(255,200,87,0.4));">🔐</div>
+      <h1 class="game-title">Admin Login</h1>
+      <p class="game-subtitle">Enter admin passcode to manage BibleQuest quizzes</p>
+
+      <div class="input-group">
+        <label class="input-label" for="admin-passcode">Admin Passcode</label>
+        <div style="position:relative; display:flex; align-items:center;">
+          <input type="password" id="admin-passcode" class="input-text" placeholder="Enter admin passcode" autofocus autocomplete="current-password" style="padding-right: 48px;" />
+          <button type="button" id="btn-toggle-admin-pass" style="position:absolute; right:14px; background:none; border:none; color:var(--gold-divine); font-size:1.35rem; cursor:pointer; line-height:1;" title="Show/Hide Password">👁️</button>
+        </div>
+      </div>
+
+      <div id="admin-login-error" style="color: #EF4444; font-weight: 700; margin-bottom: 14px; display: none;"></div>
+
+      <button id="btn-admin-login" class="btn-big btn-purple">
+        Login 🔓
+      </button>
+    </div>
+
+    <!-- Screen 2: Admin Dashboard -->
+    <div id="admin-dashboard-screen" style="width: 100%; max-width: 1140px; display: none;">
+      
+      <!-- Firebase connection status banner -->
+      <div id="firebase-status-banner" class="status-banner status-info" style="display:none;"></div>
+
+      <!-- Dashboard Header -->
+      <div class="admin-header">
+        <div>
+          <h1 class="game-title" style="margin-bottom:4px;">
+            Quest Management
+          </h1>
+          <p style="color: var(--text-secondary); font-size: 1.05rem; font-weight: 500;">
+            Create, edit, and organize quizzes with Multiple Choice and True/False questions
+          </p>
+        </div>
+
+        <div class="admin-tabs">
+          <button id="tab-list" class="tab-btn active">📚 All Quizzes</button>
+          <button id="tab-create" class="tab-btn">+ Create New Quiz</button>
+        </div>
+      </div>
+
+      <!-- Tab View 1: Quizzes List -->
+      <div id="view-quiz-list">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; flex-wrap:wrap; gap:12px;">
+          <h3 style="font-family:var(--font-cinematic); font-size:1.45rem; font-weight:900; color:var(--gold-divine);">Available Scripture Quizzes</h3>
+          <div style="display:flex; gap:10px;">
+            <button id="btn-export-all" class="icon-btn" title="Backup quizzes as JSON">📥 Export Backup</button>
+            <label class="icon-btn" style="cursor:pointer;" title="Import quizzes from JSON">
+              📤 Import
+              <input type="file" id="input-import-file" accept=".json" style="display:none;" />
+            </label>
+          </div>
+        </div>
+
+        <div id="quiz-admin-cards" class="quiz-grid">
+          <!-- Rendered dynamically -->
+        </div>
+      </div>
+
+      <!-- Tab View 2: Create / Edit Quiz Form -->
+      <div id="view-quiz-create" style="display: none;">
+        <input type="hidden" id="editing-quiz-id" value="" />
+
+        <!-- Quiz Details Card -->
+        <div class="game-card" style="max-width:100%; text-align:left; margin-bottom:28px;">
+          <h3 style="font-family:var(--font-cinematic); font-size:1.55rem; font-weight:900; color:var(--gold-divine); margin-bottom:18px;">
+            Quiz Basic Info
+          </h3>
+
+          <div style="display:grid; grid-template-columns: 1fr; gap:18px;">
+            <div class="input-group">
+              <label class="input-label" for="quiz-title">Quiz Title</label>
+              <input type="text" id="quiz-title" class="input-text" placeholder="e.g. Life of Jesus & Miracles Quest" style="text-align:left; font-size:1.15rem; letter-spacing:normal;" required />
+            </div>
+
+            <div class="input-group" style="margin-bottom:0;">
+              <label class="input-label" for="quiz-desc">Description (Optional)</label>
+              <input type="text" id="quiz-desc" class="input-text" placeholder="Brief description of this quiz topic..." style="text-align:left; font-size:1rem; letter-spacing:normal;" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Questions Section -->
+        <div style="margin-bottom: 28px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;">
+            <h3 style="font-family:var(--font-cinematic); font-size:1.55rem; font-weight:900; color:#FFFFFF;">
+              Questions List
+            </h3>
+          </div>
+
+          <div id="questions-container">
+            <!-- Questions rendered here with inline "+ Add Another Question" buttons on each question! -->
+          </div>
+
+          <!-- Bottom Add Question Button -->
+          <div style="text-align:center; margin-top:20px;">
+            <button id="btn-bottom-add-question" type="button" class="btn-primary" style="padding:14px 32px; font-size:1.1rem;">
+              + Add Question at End ➕
+            </button>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div style="display:flex; gap:16px; justify-content:flex-end;">
+          <button id="btn-cancel-edit" type="button" class="icon-btn" style="padding:16px 32px; font-size:1.1rem;">
+            Cancel
+          </button>
+          <button id="btn-save-quiz" type="button" class="btn-primary btn-gold" style="padding:16px 40px; font-size:1.2rem;">
+            Save Quiz to Firebase 💾
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Firebase Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+
+  <!-- App Scripts -->
+  <script src="js/firebase-config.js"></script>
+  <script src="js/particles.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

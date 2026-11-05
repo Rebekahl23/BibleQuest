@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>BibleQuest — Live Biblical Multiplayer Quest</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📖</text></svg>">
+</head>
+<body>
+
+  <!-- Cinematic Introduction Experience -->
+  <div id="cinematic-intro" class="cinematic-intro-overlay">
+    <div class="divine-light-beams"></div>
+    <div class="cinematic-bible-glow">
+      <svg class="sacred-bible-svg" viewBox="0 0 200 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <!-- Golden Open Bible Illustration -->
+        <defs>
+          <linearGradient id="bibleGoldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#FFE082" />
+            <stop offset="50%" stop-color="#FFC857" />
+            <stop offset="100%" stop-color="#D49B20" />
+          </linearGradient>
+          <linearGradient id="pageGlow" x1="0%" y1="0%" x2="0%" y2="100%">
+            <stop offset="0%" stop-color="#FFFFFF" />
+            <stop offset="100%" stop-color="#EDE9FE" />
+          </linearGradient>
+        </defs>
+        <!-- Rays behind pages -->
+        <path d="M100 120 L30 10 M100 120 L70 5 M100 120 L130 5 M100 120 L170 10" stroke="url(#bibleGoldGrad)" stroke-width="2" stroke-dasharray="4 4" opacity="0.6" />
+        <!-- Bible Cover Outer -->
+        <path d="M10 115 C55 110 85 118 100 130 C115 118 145 110 190 115 L185 35 C145 30 115 38 100 50 C85 38 55 30 15 35 Z" fill="#141B35" stroke="url(#bibleGoldGrad)" stroke-width="3" />
+        <!-- Left Pages Stack -->
+        <path d="M18 36 C55 32 85 40 98 52 L98 126 C85 116 55 108 18 112 Z" fill="url(#pageGlow)" />
+        <!-- Right Pages Stack -->
+        <path d="M182 36 C145 32 115 40 102 52 L102 126 C115 116 145 108 182 112 Z" fill="url(#pageGlow)" />
+        <!-- Page Text Lines (Scripture) -->
+        <line x1="32" y1="55" x2="84" y2="58" stroke="#94A3B8" stroke-width="2.5" stroke-linecap="round" />
+        <line x1="32" y1="68" x2="84" y2="71" stroke="#94A3B8" stroke-width="2.5" stroke-linecap="round" />
+        <line x1="32" y1="81" x2="74" y2="83" stroke="#94A3B8" stroke-width="2.5" stroke-linecap="round" />
+        <line x1="32" y1="94" x2="84" y2="96" stroke="#94A3B8" stroke-width="2.5" stroke-linecap="round" />
+
+        <line x1="116" y1="58" x2="168" y2="55" stroke="#94A3B8" stroke-width="2.5" stroke-linecap="round" />
+        <line x1="116" y1="71" x2="168" y2="68" stroke="#94A3B8" stroke-width="2.5" stroke-linecap="round" />
+        <line x1="116" y1="83" x2="158" y2="81" stroke="#94A3B8" stroke-width="2.5" stroke-linecap="round" />
+        <line x1="116" y1="96" x2="168" y2="94" stroke="#94A3B8" stroke-width="2.5" stroke-linecap="round" />
+        <!-- Golden Cross in Spine -->
+        <path d="M100 62 L100 100 M92 72 L108 72" stroke="url(#bibleGoldGrad)" stroke-width="3" stroke-linecap="round" />
+      </svg>
+    </div>
+    <div class="cinematic-title-box">
+      <div class="cinematic-cross">✦ &nbsp; 📜 &nbsp; ✝ &nbsp; 🕊 &nbsp; ✦</div>
+      <h1 class="cinematic-logo-text">BIBLEQUEST</h1>
+      <p class="cinematic-tagline">Discover the Word. Begin Your Quest.</p>
+      <div class="cinematic-actions">
+        <button id="btn-enter-quest" class="btn-cinematic-enter">
+          Begin Your Quest ➔
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Top Navigation Bar -->
+  <nav class="top-nav">
+    <a href="index.html" class="brand-logo">
+      <span class="brand-emblem">📖</span>
+      <span class="brand-text">BibleQuest</span>
+      <span class="brand-badge">Player</span>
+    </a>
+    <div class="nav-actions">
+      <button id="btn-replay-intro" class="icon-btn" title="Replay Cinematic Introduction">
+        ✨ Intro
+      </button>
+      <button id="btn-mute" class="icon-btn">🔊 Sound</button>
+
+      <!-- Admin Status Controls -->
+      <button id="btn-show-login-modal" class="icon-btn" style="color:var(--gold-divine); font-weight:800; border-color:rgba(255,200,87,0.35);">
+        🔐 Admin Login
+      </button>
+      <a id="btn-nav-dashboard" href="admin.html" class="icon-btn" style="display:none; color:var(--gold-divine); font-weight:800;">
+        ⚙️ Dashboard
+      </a>
+      <a id="btn-nav-host" href="host.html" class="btn-primary btn-gold" style="display:none; padding:8px 16px; font-size:0.9rem;">
+        💻 Host Screen
+      </a>
+      <button id="btn-nav-logout" class="icon-btn" style="display:none; color:#EF4444;">
+        🚪 Logout
+      </button>
+    </div>
+  </nav>
+
+  <!-- Admin Login Modal -->
+  <div id="login-modal" class="modal-overlay" style="display: none;">
+    <div class="modal-card">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+        <h3 style="font-family:var(--font-cinematic); font-size:1.55rem; font-weight:900; color:var(--gold-divine);">Admin Login</h3>
+        <button id="btn-close-modal" class="icon-btn" style="padding:4px 10px; border-radius:50%; font-size:1.1rem; line-height:1;">✕</button>
+      </div>
+      <p style="color:var(--text-secondary); margin-bottom:20px; font-size:0.95rem; line-height:1.5;">
+        Enter passcode to host game sessions and manage BibleQuest quizzes.
+      </p>
+
+      <div class="input-group">
+        <label class="input-label" for="modal-passcode">Admin Passcode</label>
+        <div style="position:relative; display:flex; align-items:center;">
+          <input type="password" id="modal-passcode" class="input-text" placeholder="Enter admin passcode" autocomplete="current-password" style="font-size:1.2rem; padding:14px; padding-right:48px; letter-spacing:normal;" />
+          <button type="button" id="btn-toggle-modal-pass" style="position:absolute; right:14px; background:none; border:none; color:var(--gold-divine); font-size:1.35rem; cursor:pointer; line-height:1;" title="Show/Hide Password">👁️</button>
+        </div>
+      </div>
+
+      <div id="modal-error" style="color:#EF4444; font-weight:700; margin-bottom:14px; font-size:0.9rem; display:none;"></div>
+
+      <button id="btn-modal-submit" class="btn-big btn-purple" style="padding:14px; font-size:1.15rem;">
+        Login 🔓
+      </button>
+    </div>
+  </div>
+
+  <!-- Main Container -->
+  <main class="main-container">
+
+    <!-- Screen 1: Enter Game PIN with Hero Banner and Adventure Categories Showcase -->
+    <div id="screen-pin" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+      
+      <!-- Hero Banner -->
+      <div class="bible-hero-banner">
+        <div class="bible-hero-badge">✦ Live Multiplayer Scripture Quest ✦</div>
+        <h1 class="bible-hero-title">
+          Discover the Word. <span>Begin Your Quest.</span>
+        </h1>
+        <p class="bible-hero-desc">
+          Immerse yourself in epic biblical adventures, test your sacred knowledge, and challenge family and friends in real-time quiz gameplay.
+        </p>
+        <div class="bible-hero-actions">
+          <button onclick="document.getElementById('player-pin').focus();" class="btn-primary btn-gold" style="padding:14px 28px; font-size:1.1rem;">
+            Join a Game 🚀
+          </button>
+          <button id="btn-hero-host" onclick="document.getElementById('btn-show-login-modal').click();" class="icon-btn" style="padding:14px 28px; font-size:1.1rem; background:rgba(20,27,53,0.9);">
+            Host a Quiz 💻
+          </button>
+        </div>
+      </div>
+
+      <!-- PIN Join Card -->
+      <div class="game-card">
+        <div style="font-size: 3.2rem; margin-bottom: 10px; filter:drop-shadow(0 0 15px rgba(255,200,87,0.5));">⚔️</div>
+        <h2 class="game-title">Join Live Game</h2>
+        <p class="game-subtitle">Enter the 6-digit Game PIN displayed on the host screen</p>
+        
+        <div class="input-group">
+          <label class="input-label" for="player-pin">Game PIN</label>
+          <input type="text" id="player-pin" class="input-pin" placeholder="123 456" maxlength="8" autofocus inputmode="numeric" autocomplete="off" />
+        </div>
+
+        <button id="btn-pin-submit" class="btn-big btn-purple">
+          Enter The Quest 🚀
+        </button>
+      </div>
+
+      <!-- Adventure Categories Showcase -->
+      <section class="adventure-realms-section">
+        <h2 class="realms-heading">✦ Sacred Quest Realms & Categories ✦</h2>
+        <p class="realms-subtitle">Explore timeless stories, profound teachings, and inspiring heroes</p>
+
+        <div class="realms-grid">
+          <!-- 1: Old Testament -->
+          <div class="realm-card">
+            <div>
+              <div class="realm-icon">📜</div>
+              <h3 class="realm-title">The Old Testament</h3>
+              <p class="realm-desc">Creation, the Exodus, the Ark of the Covenant, and the ancient patriarchs of faith.</p>
+            </div>
+            <div class="realm-badge">Genesis to Malachi</div>
+          </div>
+
+          <!-- 2: New Testament -->
+          <div class="realm-card">
+            <div>
+              <div class="realm-icon">🕊️</div>
+              <h3 class="realm-title">The New Testament</h3>
+              <p class="realm-desc">The early church, apostolic epistles, missionary journeys of Paul, and divine grace.</p>
+            </div>
+            <div class="realm-badge">Gospels to Revelation</div>
+          </div>
+
+          <!-- 3: Life of Jesus -->
+          <div class="realm-card">
+            <div>
+              <div class="realm-icon">✝️</div>
+              <h3 class="realm-title">Life of Jesus</h3>
+              <p class="realm-desc">His birth in Bethlehem, parables, Sermon on the Mount, and triumphant resurrection.</p>
+            </div>
+            <div class="realm-badge">The Four Gospels</div>
+          </div>
+
+          <!-- 4: Miracles & Wonders -->
+          <div class="realm-card">
+            <div>
+              <div class="realm-icon">🌊</div>
+              <h3 class="realm-title">Miracles & Wonders</h3>
+              <p class="realm-desc">Parting the Red Sea, walking on water, healing the blind, and feeding the thousands.</p>
+            </div>
+            <div class="realm-badge">Signs & Wonders</div>
+          </div>
+
+          <!-- 5: Kings & Prophets -->
+          <div class="realm-card">
+            <div>
+              <div class="realm-icon">👑</div>
+              <h3 class="realm-title">Kings & Prophets</h3>
+              <p class="realm-desc">David and Goliath, King Solomon's wisdom, Elijah on Mount Carmel, and Isaiah's visions.</p>
+            </div>
+            <div class="realm-badge">Royal Chronicles</div>
+          </div>
+
+          <!-- 6: Bible Characters -->
+          <div class="realm-card">
+            <div>
+              <div class="realm-icon">🛡️</div>
+              <h3 class="realm-title">Bible Characters</h3>
+              <p class="realm-desc">Courageous heroes of faith: Moses, Esther, Peter, Ruth, Daniel, and Deborah.</p>
+            </div>
+            <div class="realm-badge">Heroes of Faith</div>
+          </div>
+
+          <!-- 7: Sacred Scripture & Verses -->
+          <div class="realm-card">
+            <div>
+              <div class="realm-icon">📖</div>
+              <h3 class="realm-title">Bible Verses & Psalms</h3>
+              <p class="realm-desc">Timeless Psalms, Proverbs of wisdom, and foundational verses that guide our daily walk.</p>
+            </div>
+            <div class="realm-badge">Wisdom & Truth</div>
+          </div>
+
+          <!-- 8: Mixed Bible Challenges -->
+          <div class="realm-card">
+            <div>
+              <div class="realm-icon">⚔️</div>
+              <h3 class="realm-title">Mixed Bible Quest</h3>
+              <p class="realm-desc">The ultimate scripture challenge spanning both testaments and all historical eras.</p>
+            </div>
+            <div class="realm-badge">Grand Challenge</div>
+          </div>
+        </div>
+      </section>
+
+    </div>
+
+    <!-- Screen 2: Enter Nickname -->
+    <div id="screen-nickname" class="game-card" style="display: none;">
+      <div style="font-size: 3.5rem; margin-bottom: 12px; filter:drop-shadow(0 0 15px rgba(255,200,87,0.5));">🛡️</div>
+      <h1 class="game-title">Enter Nickname</h1>
+      <p class="game-subtitle">Choose a champion name to show on the live quest board</p>
+
+      <div class="input-group">
+        <label class="input-label" for="player-nickname">Player Nickname</label>
+        <input type="text" id="player-nickname" class="input-text" placeholder="e.g. David, Esther, Paul..." maxlength="18" autocomplete="off" />
+      </div>
+
+      <button id="btn-nickname-submit" class="btn-big btn-purple">
+        Ready For Quest 👉
+      </button>
+    </div>
+
+    <!-- Screen 3: Lobby Waiting -->
+    <div id="screen-lobby" class="game-card" style="display: none;">
+      <div style="font-size: 3.5rem; margin-bottom: 14px; animation: emblemPulse 2s infinite ease-in-out;">🕊️</div>
+      <h2 style="font-family:var(--font-cinematic); font-size: 2.1rem; font-weight: 900; color: var(--gold-divine); margin-bottom: 8px;">
+        You're In The Quest!
+      </h2>
+      <p style="font-size: 1.2rem; font-weight: 800; color: #FFFFFF; margin-bottom: 20px;">
+        Player: <span id="lobby-nickname-display" style="color:var(--gold-divine); font-weight:900;"></span>
+      </p>
+
+      <div style="background: rgba(14,21,45,0.9); border: 2px dashed rgba(255,200,87,0.35); border-radius: 16px; padding: 22px; margin-bottom: 22px;">
+        <div style="font-size: 0.85rem; font-weight: 800; color: var(--gold-divine); text-transform: uppercase; letter-spacing:1.5px;">Current Quest</div>
+        <div id="lobby-quiz-title" style="font-family:var(--font-cinematic); font-size: 1.45rem; font-weight: 900; color: #FFFFFF; margin-top: 8px;">Loading...</div>
+      </div>
+
+      <p style="color: var(--text-secondary); font-size: 1.05rem; font-weight: 600;">
+        Look at the host screen. The quest will begin shortly! 🚀
+      </p>
+    </div>
+
+    <!-- Screen 4: Question & Answers on Player Screen (Mobile & Laptop) -->
+    <div id="screen-question" class="game-live-layout" style="display: none;">
+      <!-- Question Banner -->
+      <div class="question-banner">
+        <div class="question-meta">
+          <span>✦ SCRIPTURE QUESTION ✦</span>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="font-weight:900; color:var(--gold-divine); font-size:1.35rem; font-family:var(--font-cinematic);" id="player-timer-text">20s</span>
+          </div>
+        </div>
+        <div id="player-question-text" class="question-text">
+          Question will appear here...
+        </div>
+        <!-- Progress Bar -->
+        <div style="width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 6px; margin-top: 18px; overflow: hidden;">
+          <div id="player-timer-bar" style="height: 100%; width: 100%; background: var(--gold-grad); transition: width 1s linear;"></div>
+        </div>
+      </div>
+
+      <!-- Answer Cards Grid (2 cards for True/False, 4 cards for Multiple Choice) -->
+      <div id="player-answers-grid" class="answers-grid">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+
+    <!-- Screen 5: Answer Submitted Feedback -->
+    <div id="screen-feedback" class="game-card" style="display: none;">
+      <div id="feedback-icon" style="font-size: 4.5rem; margin-bottom: 14px;">⏳</div>
+      <h2 id="feedback-title" style="font-family:var(--font-cinematic); font-size: 2.1rem; font-weight: 900; margin-bottom: 10px; color:#FFFFFF;">Answer Locked In!</h2>
+      <p id="feedback-points" style="font-size: 1.45rem; font-weight: 900; color: var(--gold-divine); margin-bottom: 12px;">Waiting for other players...</p>
+      <p id="feedback-streak" style="font-size: 1.05rem; color: var(--text-secondary); font-weight: 600;"></p>
+    </div>
+
+    <!-- Screen 6: Scoreboard / Leaderboard -->
+    <div id="screen-leaderboard" class="leaderboard-container" style="display: none; margin:0 auto;">
+      <div class="leaderboard-header">
+        <div>
+          <h2 style="font-family:var(--font-cinematic); font-size: 2rem; font-weight: 900; color: var(--gold-divine);">Quest Leaderboard</h2>
+          <p id="player-my-rank" style="font-size: 1.15rem; font-weight: 800; color: #38BDF8; margin-top: 4px;"></p>
+        </div>
+      </div>
+      <div id="player-leaderboard-list" class="leaderboard-list">
+        <!-- Rendered dynamically -->
+      </div>
+    </div>
+
+    <!-- Screen 7: Final Podium / Game Over -->
+    <div id="screen-podium" class="game-card" style="display: none; max-width: 520px; margin:0 auto;">
+      <div style="font-size: 4.5rem; margin-bottom: 12px; filter:drop-shadow(0 0 20px rgba(255,200,87,0.7));">🎉</div>
+      <h1 class="game-title">Quiz Completed!</h1>
+      <p id="player-podium-msg" style="font-size: 1.25rem; font-weight: 700; color: var(--gold-divine); margin-bottom: 24px;">Thank you for participating! Check the host screen for winners & scores.</p>
+
+      <button onclick="location.reload()" class="btn-big btn-purple">
+        Play Again 🔄
+      </button>
+    </div>
+
+  </main>
+
+  <!-- Firebase Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-database-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+
+  <!-- App Scripts -->
+  <script src="js/firebase-config.js"></script>
+  <script src="js/particles.js"></script>
+  <script src="js/audio.js"></script>
+  <script src="js/confetti.js"></script>
+  <script src="js/player.js"></script>
+
+  <!-- Cinematic Intro Controller -->
+  <script>
+    (function() {
+      const intro = document.getElementById('cinematic-intro');
+      const enterBtn = document.getElementById('btn-enter-quest');
+      const replayBtn = document.getElementById('btn-replay-intro');
+
+      function hideIntro() {
+        if (!intro) return;
+        intro.classList.add('fade-out');
+        sessionStorage.setItem('bq_intro_seen', 'true');
+      }
+
+      function showIntro() {
+        if (!intro) return;
+        intro.classList.remove('fade-out');
+      }
+
+      if (enterBtn) {
+        enterBtn.addEventListener('click', hideIntro);
+      }
+
+      if (replayBtn) {
+        replayBtn.addEventListener('click', showIntro);
+      }
+
+      // Automatically dismiss intro after 3.6s if already seen in session
+      if (sessionStorage.getItem('bq_intro_seen') === 'true') {
+        intro.style.display = 'none';
+      } else {
+        setTimeout(hideIntro, 3800);
+      }
+    })();
+  </script>
+</body>
+</html>
